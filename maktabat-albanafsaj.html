@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مكتبة البنفسج – رفيدة رمضان</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --v950:#1e0a2e;--v900:#2d1147;--v800:#4a1d6b;--v700:#6b2d9a;
+  --v600:#8b3fc4;--v500:#a855f7;--v400:#c084fc;--v300:#d8b4fe;
+  --v100:#f3e8ff;--gold:#d4a843;--gold-l:#f0cc6a;
+  --bg:#fefcf8;--text:#1a0a2e;--card:#fff;
+  --nav:rgba(255,252,248,.93);--border:#e8dff5;--mist:#f0eaf8;
+  --shadow:rgba(107,45,154,.18);
+}
+[data-theme="dark"]{
+  --bg:#1e0a2e;--text:#ede0ff;--card:#2d1147;
+  --nav:rgba(30,10,46,.96);--border:#4a1d6b;--mist:#2d1147;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);transition:background .35s,color .35s;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--v500);border-radius:3px}
+
+/* NAV */
+nav{position:fixed;top:0;right:0;left:0;z-index:200;background:var(--nav);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:66px}
+.nav-logo{display:flex;align-items:center;gap:.4rem;font-family:'Amiri',serif;font-size:1.5rem;font-weight:700;color:var(--v700);text-decoration:none}
+[data-theme="dark"] .nav-logo{color:var(--v300)}
+.logo-gold{color:var(--gold)}
+.nav-links{display:flex;gap:1.8rem;list-style:none}
+.nav-links a{color:var(--text);text-decoration:none;font-size:.88rem;font-weight:700;position:relative;padding-bottom:3px;transition:color .2s}
+.nav-links a::after{content:'';position:absolute;bottom:0;right:0;left:0;height:2px;background:var(--v500);border-radius:2px;transform:scaleX(0);transform-origin:right;transition:transform .25s}
+.nav-links a:hover{color:var(--v600)}.nav-links a:hover::after{transform:scaleX(1)}
+.nav-actions{display:flex;align-items:center;gap:.6rem}
+.btn-ic{background:none;border:none;cursor:pointer;color:var(--text);font-size:1.1rem;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:.2s}
+.btn-ic:hover{background:var(--v100);color:var(--v700)}[data-theme="dark"] .btn-ic:hover{background:var(--v800)}
+.cart-w{position:relative}.cb-num{position:absolute;top:-5px;left:-5px;background:var(--gold);color:#1a0a2e;font-size:.6rem;font-weight:900;border-radius:50%;width:17px;height:17px;display:flex;align-items:center;justify-content:center}
+.btn-ncta{background:linear-gradient(135deg,var(--v700),var(--v500));color:#fff;border:none;border-radius:10px;padding:.45rem 1.1rem;font-family:'Cairo',sans-serif;font-size:.83rem;font-weight:700;cursor:pointer;transition:.2s;white-space:nowrap}
+.btn-ncta:hover{transform:translateY(-1px);box-shadow:0 5px 16px var(--shadow)}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.burger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:.3s}
+.mob-menu{display:none;flex-direction:column;position:absolute;top:66px;right:0;left:0;background:var(--nav);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);padding:1rem 2rem 1.5rem;gap:.8rem}
+.mob-menu.open{display:flex}
+.mob-menu a{color:var(--text);text-decoration:none;font-size:.9rem;font-weight:700;padding:.35rem 0;border-bottom:1px solid var(--border)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:7rem 2rem 5rem;background:linear-gradient(155deg,var(--v950) 0%,var(--v800) 55%,#7c3aed 100%)}
+.orb{position:absolute;border-radius:50%;pointer-events:none;animation:pulse 7s ease-in-out infinite alternate}
+.o1{width:520px;height:520px;top:-130px;left:-100px;background:radial-gradient(circle,rgba(168,85,247,.3) 0%,transparent 70%)}
+.o2{width:380px;height:380px;bottom:-80px;right:-80px;background:radial-gradient(circle,rgba(212,168,67,.18) 0%,transparent 70%);animation-delay:-4s}
+.o3{width:200px;height:200px;top:40%;right:15%;background:radial-gradient(circle,rgba(168,85,247,.2) 0%,transparent 70%);animation-delay:-2s}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.12)}}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px}
+.hero-in{position:relative;z-index:2;text-align:center;max-width:720px;animation:fadeUp .9s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.1);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);border-radius:30px;padding:.35rem 1.1rem;color:var(--v300);font-size:.8rem;font-weight:700;margin-bottom:1.6rem}
+.dot-pulse{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite;display:inline-block}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero h1{font-family:'Amiri',serif;font-size:clamp(2.8rem,7vw,5rem);color:#fff;line-height:1.2;margin-bottom:.8rem;text-shadow:0 4px 28px rgba(0,0,0,.35)}
+.hero h1 em{color:var(--gold);font-style:normal}
+.hero-sub{font-size:1rem;color:rgba(255,255,255,.72);max-width:480px;margin:0 auto .6rem;line-height:1.9}
+.hero-owner{color:var(--gold);font-size:.95rem;font-weight:700;margin-bottom:2rem}
+.hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3.5rem}
+.btn-hero{padding:.85rem 2.2rem;border-radius:14px;font-family:'Cairo',sans-serif;font-size:.97rem;font-weight:700;cursor:pointer;transition:.25s;border:none;text-decoration:none;display:inline-block}
+.btn-gold{background:var(--gold);color:var(--v950)}.btn-gold:hover{background:var(--gold-l);transform:translateY(-2px);box-shadow:0 8px 24px rgba(212,168,67,.4)}
+.btn-ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3)}.btn-ghost:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
+.hero-stats{display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap}
+.stat{text-align:center;animation:fadeUp .9s ease both}
+.stat:nth-child(2){animation-delay:.1s}.stat:nth-child(3){animation-delay:.2s}
+.stat strong{display:block;font-size:2rem;font-weight:900;color:#fff}
+.stat span{font-size:.78rem;color:rgba(255,255,255,.6)}
+
+/* SECTION BASE */
+section{padding:5rem 2rem}
+.container{max-width:1200px;margin:0 auto}
+.sec-hd{text-align:center;margin-bottom:3rem}
+.sec-lbl{display:inline-block;color:var(--v600);font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem}
+[data-theme="dark"] .sec-lbl{color:var(--v400)}
+.sec-title{font-family:'Amiri',serif;font-size:clamp(1.7rem,4vw,2.5rem);margin-bottom:.6rem}
+.sec-sub{color:#999;font-size:.88rem;max-width:480px;margin:0 auto;line-height:1.8}
+
+/* QUICK */
+.quick{background:var(--mist)}[data-theme="dark"] .quick{background:var(--v900)}
+.qs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem}
+.qs-card{border-radius:20px;padding:2rem 1.5rem;cursor:pointer;transition:.25s;display:flex;flex-direction:column;gap:.6rem;position:relative;overflow:hidden;text-decoration:none}
+.qs-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,0,0,.18)}
+.qs-card.sell{background:linear-gradient(135deg,#4a1d6b,#8b3fc4)}
+.qs-card.rent{background:linear-gradient(135deg,#1e3a6b,#2d72c4)}
+.qs-card.pdf{background:linear-gradient(135deg,#1e5c2d,#27a348)}
+.qs-card.free{background:linear-gradient(135deg,#6b3a1e,#c4772d)}
+.qs-card *{color:#fff}
+.qs-ic{font-size:2.4rem}.qs-tit{font-size:1.05rem;font-weight:900}.qs-desc{font-size:.82rem;opacity:.8;line-height:1.7}.qs-arr{margin-top:auto;font-size:1rem}
+
+/* CATS */
+.cats{background:var(--bg)}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:1rem}
+.cat-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:1.3rem .8rem;text-align:center;cursor:pointer;transition:.25s;text-decoration:none;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:.5rem}
+.cat-card:hover{border-color:var(--v500);transform:translateY(-4px);box-shadow:0 10px 28px var(--shadow)}
+.ci-icon{font-size:1.9rem}.ci-name{font-size:.82rem;font-weight:700}.ci-cnt{font-size:.72rem;color:#aaa}
+
+/* BOOKS */
+.books-sec{background:var(--bg)}
+.books-ctrl{display:flex;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;align-items:center}
+.srch-w{flex:1;min-width:200px;position:relative}
+.srch-w input{width:100%;padding:.7rem 1rem .7rem 2.8rem;border:1.5px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:.88rem;transition:border .2s}
+.srch-w input:focus{outline:none;border-color:var(--v500)}
+.si{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:#bbb;pointer-events:none}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap}
+.chip{padding:.42rem .95rem;border-radius:30px;font-family:'Cairo',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--card);color:var(--text);transition:.2s}
+.chip.active,.chip:hover{background:var(--v600);color:#fff;border-color:var(--v600)}
+.bks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:1.4rem}
+.bk-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;overflow:hidden;cursor:pointer;transition:.25s;display:flex;flex-direction:column}
+.bk-card:hover{transform:translateY(-5px);box-shadow:0 14px 36px var(--shadow);border-color:var(--v400)}
+.bk-cov{aspect-ratio:3/4;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.bk-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;transition:transform .35s}
+.bk-card:hover .bk-bg{transform:scale(1.06)}
+.bk-bdg{position:absolute;top:.55rem;right:.55rem;padding:.18rem .55rem;border-radius:20px;font-size:.68rem;font-weight:700}
+.bd-s{background:#fff;color:var(--v700)}.bd-r{background:#dbeafe;color:#1e40af}
+.bd-p{background:#dcfce7;color:#166534}.bd-f{background:#fef9c3;color:#854d0e}
+.bk-fav{position:absolute;top:.55rem;left:.55rem;background:rgba(255,255,255,.92);border:none;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;transition:.2s}
+.bk-fav:hover{transform:scale(1.15)}.bk-fav.on{color:#ef4444}
+.bk-info{padding:.9rem;display:flex;flex-direction:column;gap:.3rem;flex:1}
+.bk-tit{font-size:.88rem;font-weight:700;line-height:1.4}
+.bk-auth{font-size:.75rem;color:#999}
+.bk-stars{color:var(--gold);font-size:.75rem}
+.bk-ft{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:.4rem}
+.bk-price{font-size:.95rem;font-weight:900;color:var(--v700)}
+[data-theme="dark"] .bk-price{color:var(--v300)}
+.bk-price small{font-size:.68rem;color:#bbb;font-weight:400}
+.btn-add{background:var(--v600);color:#fff;border:none;border-radius:9px;padding:.3rem .7rem;font-size:.75rem;font-weight:700;cursor:pointer;transition:.2s}
+.btn-add:hover{background:var(--v700)}
+.lm-wrap{text-align:center;margin-top:2.5rem}
+.btn-ol{background:none;border:2px solid var(--v600);color:var(--v600);border-radius:12px;padding:.6rem 1.8rem;font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s}
+.btn-ol:hover{background:var(--v600);color:#fff}
+
+/* SLIDER */
+.featured{background:var(--mist)}[data-theme="dark"] .featured{background:var(--v900)}
+.sl-wrap{position:relative;overflow:hidden;border-radius:22px}
+.sl-track{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.slide{min-width:100%;padding:3rem 3.5rem;background:linear-gradient(135deg,var(--v950),var(--v700));border-radius:22px;display:flex;align-items:center;gap:3rem;color:#fff;position:relative;overflow:hidden}
+.slide::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 75% 50%,rgba(212,168,67,.12),transparent 55%)}
+.sl-ic{font-size:8rem;flex-shrink:0;filter:drop-shadow(0 8px 24px rgba(0,0,0,.3));animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.sl-cnt{position:relative;z-index:1}
+.sl-lbl{font-size:.75rem;color:var(--gold);font-weight:700;letter-spacing:.1em;margin-bottom:.5rem}
+.sl-title{font-family:'Amiri',serif;font-size:clamp(1.4rem,3vw,2.3rem);margin-bottom:.4rem}
+.sl-auth{color:rgba(255,255,255,.65);font-size:.85rem;margin-bottom:.8rem}
+.sl-desc{color:rgba(255,255,255,.7);font-size:.88rem;line-height:1.85;max-width:400px;margin-bottom:1.3rem}
+.sl-price{font-size:1.5rem;font-weight:900;color:var(--gold);margin-bottom:1rem}
+.sl-nav{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1rem}
+.s-dot{width:8px;height:8px;border-radius:50%;background:var(--border);cursor:pointer;border:none;transition:.2s}
+.s-dot.active{background:var(--v600);width:22px;border-radius:4px}
+.s-arr{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:.2s}
+.s-arr:hover{background:var(--v600);color:#fff;border-color:var(--v600)}
+
+/* FREE */
+.free{background:var(--bg)}
+
+/* CART */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:300;opacity:0;pointer-events:none;transition:opacity .3s}
+.ov.open{opacity:1;pointer-events:all}
+.cart-side{position:fixed;top:0;left:0;bottom:0;width:min(370px,100vw);background:var(--card);z-index:301;transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:4px 0 28px rgba(0,0,0,.22)}
+.cart-side.open{transform:none}
+.cart-hd{padding:1.4rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.cart-hd h3{font-family:'Amiri',serif;font-size:1.3rem}
+.cart-body{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.8rem}
+.cart-item{display:flex;gap:.9rem;align-items:center;padding:.8rem;background:var(--mist);border-radius:12px}
+[data-theme="dark"] .cart-item{background:var(--v800)}
+.ci-ic{font-size:1.9rem;flex-shrink:0}
+.ci-info{flex:1}.ci-tit{font-size:.85rem;font-weight:700}.ci-pr{font-size:.8rem;color:var(--v600);font-weight:700}
+.ci-rm{background:none;border:none;color:#ef4444;cursor:pointer;font-size:1rem;padding:.2rem}
+.cart-ft{padding:1.4rem 1.5rem;border-top:1px solid var(--border)}
+.cart-tot{display:flex;justify-content:space-between;font-weight:700;font-size:1.05rem;margin-bottom:1rem}
+.btn-co{width:100%;padding:.85rem;border-radius:14px;background:linear-gradient(135deg,var(--v700),var(--v500));color:#fff;font-family:'Cairo',sans-serif;font-size:.95rem;font-weight:700;border:none;cursor:pointer;transition:.2s}
+.btn-co:hover{transform:translateY(-2px);box-shadow:0 6px 20px var(--shadow)}
+.cart-empty{text-align:center;color:#bbb;padding:3rem 1rem;font-size:.9rem}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:400;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal-ov.open{opacity:1;pointer-events:all}
+.modal{background:var(--card);border-radius:24px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;transform:scale(.9);transition:transform .3s;padding:2rem}
+.modal-ov.open .modal{transform:scale(1)}
+.modal-cl{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text);line-height:1}
+.modal-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;gap:1rem}
+.modal-title{font-family:'Amiri',serif;font-size:1.6rem;line-height:1.3}
+.modal-body{display:flex;gap:2rem;flex-wrap:wrap}
+.modal-cov{font-size:6rem;flex-shrink:0;width:120px;height:160px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.modal-det{flex:1;min-width:200px}
+.modal-auth{color:#888;margin-bottom:.4rem;font-size:.88rem}
+.modal-rat{color:var(--gold);margin-bottom:.6rem;font-size:.88rem}
+.modal-desc{line-height:1.9;font-size:.88rem;margin-bottom:1rem}
+.modal-price{font-size:1.5rem;font-weight:900;color:var(--v700);margin-bottom:1rem}
+[data-theme="dark"] .modal-price{color:var(--v300)}
+.modal-act{display:flex;gap:.7rem;flex-wrap:wrap}
+.btn-buy{background:linear-gradient(135deg,var(--v700),var(--v500));color:#fff;border:none;border-radius:12px;padding:.6rem 1.3rem;font-family:'Cairo',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:.2s}
+.btn-buy:hover{transform:translateY(-1px);box-shadow:0 5px 16px var(--shadow)}
+.btn-rent-m{background:linear-gradient(135deg,#1e3a6b,#2d72c4);color:#fff;border:none;border-radius:12px;padding:.6rem 1.3rem;font-family:'Cairo',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:.2s}
+.btn-rent-m:hover{transform:translateY(-1px)}
+.btn-dl{background:linear-gradient(135deg,#1e5c2d,#27a348);color:#fff;border:none;border-radius:12px;padding:.6rem 1.3rem;font-family:'Cairo',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:.2s}
+
+/* AUTH */
+.auth-tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:1.5rem}
+.auth-tab{flex:1;text-align:center;padding:.75rem;cursor:pointer;font-weight:700;font-size:.88rem;transition:color .2s;border-bottom:2px solid transparent;margin-bottom:-2px}
+.auth-tab.active{color:var(--v600);border-bottom-color:var(--v600)}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.82rem;font-weight:700;margin-bottom:.4rem}
+.fg input,.fg select,.fg textarea{width:100%;padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:.88rem;transition:border .2s}
+.fg input:focus,.fg textarea:focus{outline:none;border-color:var(--v500)}
+.fg textarea{resize:none;height:120px}
+
+/* CONTACT */
+.contact{background:var(--mist)}[data-theme="dark"] .contact{background:var(--v900)}
+.cnt-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+@media(max-width:680px){.cnt-grid{grid-template-columns:1fr}}
+.cnt-info{display:flex;flex-direction:column;gap:1rem}
+.c-item{display:flex;align-items:center;gap:1rem;padding:1rem;background:var(--card);border:1.5px solid var(--border);border-radius:14px;text-decoration:none;color:var(--text);transition:border .2s}
+.c-item:hover{border-color:var(--v500)}
+.c-ico{font-size:1.3rem;width:44px;height:44px;border-radius:12px;background:var(--v100);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+[data-theme="dark"] .c-ico{background:var(--v800)}
+.c-lbl{font-size:.72rem;color:#aaa}.c-val{font-size:.88rem;font-weight:700}
+
+/* FOOTER */
+footer{background:var(--v950);color:rgba(255,255,255,.65);padding:4rem 2rem 1.5rem}
+.fg-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2.5rem}
+@media(max-width:768px){.fg-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.fg-grid{grid-template-columns:1fr}}
+.fb-logo{font-family:'Amiri',serif;font-size:1.5rem;color:#fff;margin-bottom:.5rem}
+.fb-logo span{color:var(--gold)}
+.fb-owner{font-size:.8rem;color:var(--v300);margin-bottom:.6rem}
+.fb-desc{font-size:.82rem;line-height:1.8}
+.fc h4{color:#fff;font-size:.88rem;margin-bottom:.9rem}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:.45rem}
+.fc ul a{color:rgba(255,255,255,.55);text-decoration:none;font-size:.82rem;transition:color .2s}
+.fc ul a:hover{color:var(--v300)}
+.f-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;font-size:.8rem}
+.f-slogan{color:var(--gold);font-family:'Amiri',serif;font-size:1rem}
+.socials{display:flex;gap:.6rem}
+.soc-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.85rem;color:#fff;text-decoration:none;transition:background .2s}
+.soc-btn:hover{background:var(--v600)}
+
+/* TOAST */
+.toast-cont{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;gap:.5rem;align-items:center;pointer-events:none}
+.toast{background:var(--v800);color:#fff;padding:.65rem 1.4rem;border-radius:30px;font-size:.85rem;font-weight:700;white-space:nowrap;animation:tIn .3s ease both}
+@keyframes tIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* FLOAT */
+.wa-float{position:fixed;bottom:4.5rem;right:1.5rem;z-index:99;background:#25d366;color:#fff;border:none;border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 4px 18px rgba(37,211,102,.4);text-decoration:none;transition:.2s}
+.wa-float:hover{transform:scale(1.1)}
+.scroll-top{position:fixed;bottom:1.5rem;right:1.5rem;z-index:99;background:var(--v600);color:#fff;border:none;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;box-shadow:0 4px 16px var(--shadow);opacity:0;transition:opacity .3s;pointer-events:none}
+.scroll-top.show{opacity:1;pointer-events:all}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{display:none}.burger{display:flex}
+  .hero-stats{gap:1.5rem}
+  .slide{flex-direction:column;text-align:center;padding:2rem 1.5rem;gap:1.5rem}.sl-ic{font-size:5rem}
+  .modal-body{flex-direction:column}
+  .fg-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:500px){
+  nav{padding:0 1rem}section{padding:4rem 1.2rem}
+  .hero{padding:6rem 1.2rem 4rem}
+  .bks-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr))}
+  .fg-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#home" class="nav-logo">📚 مكتبة <span class="logo-gold">البنفسج</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home">الرئيسية</a></li>
+    <li><a href="#books">الكتب</a></li>
+    <li><a href="#featured">المميزة</a></li>
+    <li><a href="#free">مجاني</a></li>
+    <li><a href="#contact">تواصل</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-ic" id="themeBtn">🌙</button>
+    <button class="btn-ic cart-w" id="cartBtn">🛒<span class="cb-num" id="cartCount">0</span></button>
+    <button class="btn-ncta" id="authBtn">تسجيل الدخول</button>
+    <button class="burger" id="burger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="#home">الرئيسية</a><a href="#books">الكتب</a>
+  <a href="#featured">المميزة</a><a href="#free">مجاناً</a><a href="#contact">تواصل</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+  <div class="grain"></div>
+  <div class="hero-in">
+    <div class="hero-badge"><span class="dot-pulse"></span>منصة رقمية عربية متكاملة للكتب</div>
+    <h1>مكتبة <em>البنفسج</em></h1>
+    <p class="hero-sub">اقرأ… لأن المعرفة تبدأ من هنا 💜<br>اشتري — استأجر — حمّل — واستمتع</p>
+    <p class="hero-owner">✨ رفيدة رمضان</p>
+    <div class="hero-cta">
+      <a href="#books" class="btn-hero btn-gold">تصفح الكتب</a>
+      <a href="#free" class="btn-hero btn-ghost">كتب مجانية</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><strong>+500</strong><span>كتاب متاح</span></div>
+      <div class="stat"><strong>8</strong><span>تصنيفات</span></div>
+      <div class="stat"><strong>PDF</strong><span>تحميل فوري</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK -->
+<section class="quick" id="quick">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-lbl">اكتشف</div>
+      <h2 class="sec-title">كل ما تحتاجه في مكان واحد</h2>
+    </div>
+    <div class="qs-grid">
+      <div class="qs-card sell" onclick="filterBooks('sell')">
+        <div class="qs-ic">🛍️</div><div class="qs-tit">كتب للبيع</div>
+        <div class="qs-desc">اشترِ كتبك وامتلكها للأبد مع توصيل لجميع المحافظات</div>
+        <div class="qs-arr">← تصفح الآن</div>
+      </div>
+      <div class="qs-card rent" onclick="filterBooks('rent')">
+        <div class="qs-ic">📅</div><div class="qs-tit">كتب للإيجار</div>
+        <div class="qs-desc">استأجر واقرأ بسعر أقل مع تحديد مدة الإيجار المناسبة</div>
+        <div class="qs-arr">← تصفح الآن</div>
+      </div>
+      <div class="qs-card pdf" onclick="filterBooks('pdf')">
+        <div class="qs-ic">📄</div><div class="qs-tit">كتب PDF</div>
+        <div class="qs-desc">حمّل فوراً بعد الشراء واقرأ على أي جهاز في أي وقت</div>
+        <div class="qs-arr">← تصفح الآن</div>
+      </div>
+      <div class="qs-card free" onclick="filterBooks('free')">
+        <div class="qs-ic">🎁</div><div class="qs-tit">كتب مجانية</div>
+        <div class="qs-desc">مجموعة منتقاة من الكتب المجانية لنشر المعرفة والثقافة</div>
+        <div class="qs-arr">← تصفح الآن</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="cats" id="cats">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-lbl">التصنيفات</div>
+      <h2 class="sec-title">تصفح حسب الموضوع</h2>
+    </div>
+    <div class="cat-grid" id="catGrid"></div>
+  </div>
+</section>
+
+<!-- FEATURED SLIDER -->
+<section class="featured" id="featured">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-lbl">مختارات مميزة</div>
+      <h2 class="sec-title">كتب الأسبوع</h2>
+      <p class="sec-sub">اختارت لكم رفيدة رمضان أبرز الكتب هذا الأسبوع</p>
+    </div>
+    <div class="sl-wrap">
+      <div class="sl-track" id="slTrack"></div>
+    </div>
+    <div class="sl-nav">
+      <button class="s-arr" id="slPrev">&#8594;</button>
+      <div id="slDots" style="display:flex;gap:.5rem"></div>
+      <button class="s-arr" id="slNext">&#8592;</button>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKS -->
+<section class="books-sec" id="books">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-lbl">مكتبتنا</div>
+      <h2 class="sec-title">جميع الكتب</h2>
+    </div>
+    <div class="books-ctrl">
+      <div class="srch-w">
+        <span class="si">🔍</span>
+        <input type="text" id="searchInp" placeholder="ابحث عن كتاب أو مؤلف...">
+      </div>
+      <div class="chips" id="chips">
+        <button class="chip active" data-f="all">الكل</button>
+        <button class="chip" data-f="sell">للبيع</button>
+        <button class="chip" data-f="rent">للإيجار</button>
+        <button class="chip" data-f="pdf">PDF</button>
+        <button class="chip" data-f="free">مجاني</button>
+      </div>
+    </div>
+    <div class="bks-grid" id="bksGrid"></div>
+    <div class="lm-wrap"><button class="btn-ol" id="lmBtn">تحميل المزيد</button></div>
+  </div>
+</section>
+
+<!-- FREE -->
+<section class="free" id="free">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-lbl">مجاناً تماماً</div>
+      <h2 class="sec-title">📚 الكتب المجانية</h2>
+      <p class="sec-sub">نؤمن بأن المعرفة حق للجميع — تحميل فوري بدون أي رسوم</p>
+    </div>
+    <div class="bks-grid" id="freeGrid"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-lbl">نحن هنا</div>
+      <h2 class="sec-title">تواصل معنا</h2>
+      <p class="sec-sub">رفيدة رمضان — مكتبة البنفسج، دائماً في خدمتك 💜</p>
+    </div>
+    <div class="cnt-grid">
+      <div class="cnt-info">
+        <a href="https://wa.me/201026305031" target="_blank" class="c-item">
+          <div class="c-ico">💬</div>
+          <div><div class="c-lbl">واتس آب</div><div class="c-val" dir="ltr">+20 102 630 5031</div></div>
+        </a>
+        <a href="https://www.facebook.com/share/v/18pnPbALnb/" target="_blank" class="c-item">
+          <div class="c-ico">📘</div>
+          <div><div class="c-lbl">الصفحة الرسمية</div><div class="c-val">مكتبة البنفسج — رفيدة رمضان</div></div>
+        </a>
+        <div class="c-item">
+          <div class="c-ico">🕐</div>
+          <div><div class="c-lbl">ساعات العمل</div><div class="c-val">يومياً 9 ص – 10 م</div></div>
+        </div>
+        <div class="c-item">
+          <div class="c-ico">🚚</div>
+          <div><div class="c-lbl">التوصيل</div><div class="c-val">جميع محافظات مصر</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="sec-lbl" style="margin-bottom:1rem">أرسل رسالة</div>
+        <div class="fg"><label>الاسم</label><input type="text" placeholder="اسمك الكريم"></div>
+        <div class="fg"><label>الموبايل / واتس آب</label><input type="tel" placeholder="+20 ..."></div>
+        <div class="fg"><label>الموضوع</label>
+          <select><option>استفسار عن كتاب</option><option>طلب توصيل</option><option>مشكلة في الطلب</option><option>اقتراح</option></select>
+        </div>
+        <div class="fg"><label>الرسالة</label><textarea placeholder="اكتب رسالتك هنا..."></textarea></div>
+        <button class="btn-buy" style="width:100%;padding:.85rem;font-size:.95rem" onclick="showToast('✅ تم إرسال رسالتك! سنرد عليك قريباً 💜')">إرسال الرسالة</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="fg-grid">
+      <div>
+        <div class="fb-logo">📚 مكتبة <span>البنفسج</span></div>
+        <div class="fb-owner">رفيدة رمضان</div>
+        <p class="fb-desc">منصة رقمية متكاملة لبيع وإيجار وتحميل الكتب العربية. نؤمن بأن المعرفة تبدأ من القراءة.</p>
+        <div class="socials" style="margin-top:1rem">
+          <a href="https://www.facebook.com/share/v/18pnPbALnb/" target="_blank" class="soc-btn">📘</a>
+          <a href="https://wa.me/201026305031" target="_blank" class="soc-btn">💬</a>
+        </div>
+      </div>
+      <div class="fc"><h4>تصفح</h4><ul>
+        <li><a href="#home">الرئيسية</a></li><li><a href="#books">الكتب</a></li>
+        <li><a href="#featured">المميزة</a></li><li><a href="#free">مجاني</a></li>
+      </ul></div>
+      <div class="fc"><h4>الخدمات</h4><ul>
+        <li><a href="#" onclick="filterBooks('sell')">شراء كتب</a></li>
+        <li><a href="#" onclick="filterBooks('rent')">إيجار كتب</a></li>
+        <li><a href="#" onclick="filterBooks('pdf')">تحميل PDF</a></li>
+        <li><a href="#free">مجاني</a></li>
+      </ul></div>
+      <div class="fc"><h4>تواصل</h4><ul>
+        <li><a href="https://wa.me/201026305031" target="_blank">واتس آب</a></li>
+        <li><a href="https://www.facebook.com/share/v/18pnPbALnb/" target="_blank">فيسبوك</a></li>
+        <li><a href="#contact">راسلنا</a></li>
+      </ul></div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2025 مكتبة البنفسج – رفيدة رمضان. جميع الحقوق محفوظة.</span>
+      <span class="f-slogan">اقرأ… لأن المعرفة تبدأ من هنا 💜</span>
+    </div>
+  </div>
+</footer>
+
+<!-- CART SIDEBAR -->
+<div class="ov" id="ov" onclick="closeCart()"></div>
+<div class="cart-side" id="cartSide">
+  <div class="cart-hd"><h3>🛒 سلة المشتريات</h3><button class="btn-ic" onclick="closeCart()">✕</button></div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-ft">
+    <div class="cart-tot"><span>الإجمالي:</span><span id="cartTot">0 جنيه</span></div>
+    <button class="btn-co" onclick="checkout()">إتمام الشراء ←</button>
+  </div>
+</div>
+
+<!-- BOOK MODAL -->
+<div class="modal-ov" id="bookMod" onclick="closeMod(event)">
+  <div class="modal" id="modCont"></div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-ov" id="authMod" onclick="closeAuthMod(event)">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+      <h2 style="font-family:'Amiri',serif;font-size:1.4rem">حسابك في مكتبة البنفسج</h2>
+      <button class="modal-cl" onclick="document.getElementById('authMod').classList.remove('open')">✕</button>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">تسجيل الدخول</div>
+      <div class="auth-tab" id="tab-reg" onclick="switchTab('reg')">حساب جديد</div>
+    </div>
+    <div id="loginForm">
+      <div class="fg"><label>البريد / الموبايل</label><input type="text" placeholder="بريدك أو رقمك"></div>
+      <div class="fg"><label>كلمة المرور</label><input type="password" placeholder="••••••••"></div>
+      <button class="btn-co" onclick="showToast('✅ تم تسجيل الدخول!')">دخول</button>
+    </div>
+    <div id="regForm" style="display:none">
+      <div class="fg"><label>الاسم</label><input type="text" placeholder="اسمك الكريم"></div>
+      <div class="fg"><label>البريد الإلكتروني</label><input type="email" placeholder="بريدك"></div>
+      <div class="fg"><label>الموبايل</label><input type="tel" placeholder="+20 ..."></div>
+      <div class="fg"><label>كلمة المرور</label><input type="password" placeholder="••••••••"></div>
+      <button class="btn-co" onclick="showToast('✅ تم إنشاء الحساب!')">إنشاء الحساب</button>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATS -->
+<a href="https://wa.me/201026305031" target="_blank" class="wa-float" title="تواصل على واتس آب">💬</a>
+<button class="scroll-top" id="stBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="toast-cont" id="toastCont"></div>
+
+<script>
+const CATS=[
+  {ic:'🔬',n:'علوم',c:42},{ic:'📖',n:'أدب',c:88},{ic:'🌍',n:'لغات',c:35},
+  {ic:'🧠',n:'تطوير ذات',c:67},{ic:'💻',n:'تكنولوجيا',c:54},{ic:'🏛️',n:'تاريخ',c:39},
+  {ic:'🕌',n:'ديني',c:51},{ic:'🎓',n:'تعليمي',c:73}
+];
+const BOOKS=[
+  {id:1,t:'أسرار العقل الباطن',a:'جوزيف ميرفي',tp:'sell',cat:'تطوير ذات',p:85,ic:'🧠',bg:'linear-gradient(135deg,#4a1d6b,#8b3fc4)',st:5,desc:'كتاب رائع يشرح كيف يعمل العقل الباطن وكيف تستخدمه لتحقيق أهدافك وأحلامك في الحياة.'},
+  {id:2,t:'الكيمياء',a:'باولو كويلو',tp:'sell',cat:'أدب',p:95,ic:'🌙',bg:'linear-gradient(135deg,#1e3a6b,#2d72c4)',st:5,desc:'رواية فلسفية رائعة تحكي قصة فتى أندلسي يبحث عن كنزه الحقيقي عبر رحلة ملهمة لا تُنسى.'},
+  {id:3,t:'تعلم Python',a:'مارك لوتز',tp:'pdf',cat:'تكنولوجيا',p:60,ic:'💻',bg:'linear-gradient(135deg,#1e5c2d,#27a348)',st:4,desc:'دليل شامل لتعلم لغة البرمجة Python من الصفر حتى الاحتراف مع أمثلة عملية وتمارين.'},
+  {id:4,t:'ألف ليلة وليلة',a:'تراث عربي',tp:'free',cat:'أدب',p:0,ic:'🌙',bg:'linear-gradient(135deg,#6b3a1e,#c4772d)',st:5,desc:'الموسوعة الأدبية العربية الخالدة، مجموعة من أعظم القصص الشرقية عبر التاريخ.'},
+  {id:5,t:'قوة الآن',a:'إيكهارت تول',tp:'rent',cat:'تطوير ذات',p:40,ic:'⚡',bg:'linear-gradient(135deg,#5c1e5c,#c42dc4)',st:5,desc:'كتاب روحاني يعلمك كيف تعيش اللحظة الحاضرة وتتخلص من القلق والتوتر اليومي.'},
+  {id:6,t:'تاريخ الحضارة',a:'ول ديورانت',tp:'sell',cat:'تاريخ',p:120,ic:'🏛️',bg:'linear-gradient(135deg,#5c3a1e,#c47a2d)',st:5,desc:'موسوعة ضخمة تتناول تاريخ الحضارة الإنسانية من فجر التاريخ حتى العصر الحديث.'},
+  {id:7,t:'النحو الواضح',a:'علي الجارم',tp:'pdf',cat:'لغات',p:45,ic:'📝',bg:'linear-gradient(135deg,#1e4a5c,#2d8bc4)',st:4,desc:'أشهر كتاب لتعليم قواعد النحو العربي بأسلوب مبسط وواضح مع تمارين وأمثلة كثيرة.'},
+  {id:8,t:'العقيدة الإسلامية',a:'عمر الأشقر',tp:'sell',cat:'ديني',p:70,ic:'🕌',bg:'linear-gradient(135deg,#2d5c1e,#4ab82d)',st:5,desc:'شرح وافٍ لأصول العقيدة الإسلامية الصحيحة بأدلتها من القرآن والسنة النبوية.'},
+  {id:9,t:'مبادئ الرياضيات',a:'د. أحمد الجمل',tp:'pdf',cat:'تعليمي',p:55,ic:'📐',bg:'linear-gradient(135deg,#1e2d5c,#2d4bc4)',st:4,desc:'مرجع شامل لمبادئ الرياضيات للمرحلة الثانوية والجامعية مع حلول تفصيلية.'},
+  {id:10,t:'ذاكرة الجسد',a:'أحلام مستغانمي',tp:'sell',cat:'أدب',p:80,ic:'💜',bg:'linear-gradient(135deg,#4a1d6b,#c084fc)',st:5,desc:'رواية عاطفية وطنية جزائرية تعد من أشهر الروايات العربية في القرن العشرين.'},
+  {id:11,t:'فن الحرب',a:'سون تزو',tp:'free',cat:'تاريخ',p:0,ic:'⚔️',bg:'linear-gradient(135deg,#5c1e1e,#c42d2d)',st:5,desc:'الكتاب الاستراتيجي الأشهر في التاريخ — ترجمة عربية مشروحة لأعظم مؤلفات الاستراتيجية.'},
+  {id:12,t:'أساسيات الفيزياء',a:'د. سامي ناصر',tp:'rent',cat:'علوم',p:35,ic:'⚛️',bg:'linear-gradient(135deg,#1e5c5c,#2dc4c4)',st:4,desc:'مرجع أساسي لمادة الفيزياء يشرح القوانين والمفاهيم بأمثلة وتطبيقات عملية.'}
+];
+const FEATURED=[
+  {t:'الكيمياء',a:'باولو كويلو',ic:'🌙',p:'95 جنيه',desc:'رحلة فتى أندلسي نحو كنزه الحقيقي — أكثر من رواية، إنها فلسفة حياة كاملة',lbl:'الأكثر مبيعاً'},
+  {t:'أسرار العقل الباطن',a:'جوزيف ميرفي',ic:'🧠',p:'85 جنيه',desc:'اكتشف قوة عقلك الباطن وكيف تسخّره لتحقيق كل ما تريده في الحياة والعمل',lbl:'الأكثر تقييماً'},
+  {t:'ذاكرة الجسد',a:'أحلام مستغانمي',ic:'💜',p:'80 جنيه',desc:'رواية تُعاد قراءتها جيلاً بعد جيل — جوهرة الأدب العربي المعاصر',lbl:'مختار الأسبوع'}
+];
+
+let cart=[], flt='all', srch='', slIdx=0, vis=8, favs=new Set();
+
+document.addEventListener('DOMContentLoaded',()=>{
+  renderCats(); renderSlider(); renderBooks(); renderFree();
+  initChips(); initSearch(); initTheme(); initScroll();
+  document.getElementById('burger').onclick=()=>document.getElementById('mobMenu').classList.toggle('open');
+  document.getElementById('authBtn').onclick=()=>document.getElementById('authMod').classList.add('open');
+  document.getElementById('cartBtn').onclick=openCart;
+  document.getElementById('lmBtn').onclick=()=>{vis+=4;renderBooks()};
+  setInterval(autoSlide,5000);
+});
+
+function renderCats(){
+  document.getElementById('catGrid').innerHTML=CATS.map(c=>`
+    <div class="cat-card" onclick="filterCat('${c.n}')">
+      <div class="ci-icon">${c.ic}</div><div class="ci-name">${c.n}</div><div class="ci-cnt">${c.c} كتاب</div>
+    </div>`).join('');
+}
+
+function renderSlider(){
+  document.getElementById('slTrack').innerHTML=FEATURED.map(f=>`
+    <div class="slide">
+      <div class="sl-ic">${f.ic}</div>
+      <div class="sl-cnt">
+        <div class="sl-lbl">⭐ ${f.lbl}</div>
+        <div class="sl-title">${f.t}</div>
+        <div class="sl-auth">✍️ ${f.a}</div>
+        <div class="sl-desc">${f.desc}</div>
+        <div class="sl-price">${f.p}</div>
+        <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+          <button class="btn-hero btn-gold" onclick="showToast('💜 تمت إضافة الكتاب للسلة!')">+ أضف للسلة</button>
+          <a href="#books" class="btn-hero btn-ghost">تصفح المزيد</a>
+        </div>
+      </div>
+    </div>`).join('');
+  document.getElementById('slDots').innerHTML=FEATURED.map((_,i)=>`<button class="s-dot ${i===0?'active':''}" onclick="goSlide(${i})"></button>`).join('');
+  document.getElementById('slPrev').onclick=()=>goSlide((slIdx-1+FEATURED.length)%FEATURED.length);
+  document.getElementById('slNext').onclick=()=>goSlide((slIdx+1)%FEATURED.length);
+}
+function goSlide(i){
+  slIdx=i;
+  document.getElementById('slTrack').style.transform=`translateX(${i*100}%)`;
+  document.querySelectorAll('.s-dot').forEach((d,j)=>d.classList.toggle('active',j===i));
+}
+function autoSlide(){goSlide((slIdx+1)%FEATURED.length)}
+
+function filteredBooks(){
+  return BOOKS.filter(b=>{
+    const tok=flt==='all'||b.tp===flt;
+    const sok=!srch||b.t.includes(srch)||b.a.includes(srch);
+    return tok&&sok;
+  });
+}
+
+function bkCard(b){
+  const bdg={sell:'🛍️ للبيع',rent:'📅 إيجار',pdf:'📄 PDF',free:'🎁 مجاني'};
+  const bdc={sell:'bd-s',rent:'bd-r',pdf:'bd-p',free:'bd-f'};
+  const pr=b.p===0?'<span style="color:#22c55e;font-weight:900">مجاني</span>':`${b.p} <small>جنيه</small>`;
+  const st='⭐'.repeat(b.st);
+  return `<div class="bk-card" onclick="openMod(${b.id})">
+    <div class="bk-cov">
+      <div class="bk-bg" style="background:${b.bg}">${b.ic}</div>
+      <span class="bk-bdg ${bdc[b.tp]}">${bdg[b.tp]}</span>
+      <button class="bk-fav ${favs.has(b.id)?'on':''}" onclick="togFav(event,${b.id})">❤️</button>
+    </div>
+    <div class="bk-info">
+      <div class="bk-tit">${b.t}</div>
+      <div class="bk-auth">✍️ ${b.a}</div>
+      <div class="bk-stars">${st}</div>
+      <div class="bk-ft">
+        <div class="bk-price">${pr}</div>
+        <button class="btn-add" onclick="addCart(event,${b.id})">+ أضف</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderBooks(){
+  const f=filteredBooks();
+  document.getElementById('bksGrid').innerHTML=f.slice(0,vis).map(bkCard).join('');
+  document.getElementById('lmBtn').style.display=f.length>vis?'inline-block':'none';
+}
+function renderFree(){
+  document.getElementById('freeGrid').innerHTML=BOOKS.filter(b=>b.tp==='free').map(bkCard).join('');
+}
+
+function openMod(id){
+  const b=BOOKS.find(x=>x.id===id); if(!b) return;
+  const pr=b.p===0?'<span style="color:#22c55e">مجاني تماماً 🎁</span>':`${b.p} جنيه`;
+  const st='⭐'.repeat(b.st);
+  document.getElementById('modCont').innerHTML=`
+    <div class="modal-hd">
+      <div class="modal-title">${b.t}</div>
+      <button class="modal-cl" onclick="document.getElementById('bookMod').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-cov" style="background:${b.bg}">${b.ic}</div>
+      <div class="modal-det">
+        <div class="modal-auth">✍️ ${b.a} &nbsp;|&nbsp; 📚 ${b.cat}</div>
+        <div class="modal-rat">${st} (${b.st}.0)</div>
+        <p class="modal-desc">${b.desc}</p>
+        <div class="modal-price">${pr}</div>
+        <div class="modal-act">
+          ${b.p>0?`<button class="btn-buy" onclick="addCart(null,${b.id});document.getElementById('bookMod').classList.remove('open')">🛍️ أضف للسلة</button>`:''}
+          ${b.tp==='rent'?`<button class="btn-rent-m" onclick="showToast('📅 تم تحديد مدة الإيجار!')">📅 استأجر الآن</button>`:''}
+          ${b.tp==='pdf'?`<button class="btn-buy" onclick="addCart(null,${b.id})">📄 شراء PDF</button>`:''}
+          ${b.p===0?`<button class="btn-dl" onclick="showToast('⬇️ بدأ التحميل!')">⬇️ تحميل مجاني</button>`:''}
+          <button class="btn-ol" onclick="togFav(null,${b.id})">❤️ مفضلة</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('bookMod').classList.add('open');
+}
+function closeMod(e){if(e.target.id==='bookMod')document.getElementById('bookMod').classList.remove('open')}
+function closeAuthMod(e){if(e.target.id==='authMod')document.getElementById('authMod').classList.remove('open')}
+
+function addCart(e,id){
+  if(e)e.stopPropagation();
+  const b=BOOKS.find(x=>x.id===id); if(!b) return;
+  const ex=cart.find(x=>x.id===id);
+  if(ex)ex.qty++;else cart.push({...b,qty:1});
+  updCart(); showToast(`✅ تمت إضافة "${b.t}" للسلة`);
+}
+function remCart(id){cart=cart.filter(x=>x.id!==id);updCart()}
+function updCart(){
+  const count=cart.reduce((s,x)=>s+x.qty,0);
+  document.getElementById('cartCount').textContent=count;
+  document.getElementById('cartTot').textContent=cart.reduce((s,x)=>s+x.p*x.qty,0)+' جنيه';
+  const body=document.getElementById('cartBody');
+  body.innerHTML=cart.length===0
+    ?'<div class="cart-empty">🛒<br><br>السلة فارغة<br>أضف كتبك المفضلة!</div>'
+    :cart.map(x=>`<div class="cart-item">
+        <div class="ci-ic">${x.ic}</div>
+        <div class="ci-info"><div class="ci-tit">${x.t}</div>
+        <div class="ci-pr">${x.p===0?'مجاني':x.p*x.qty+' جنيه'}${x.qty>1?' (×'+x.qty+')':''}</div></div>
+        <button class="ci-rm" onclick="remCart(${x.id})">🗑️</button>
+      </div>`).join('');
+}
+function openCart(){document.getElementById('cartSide').classList.add('open');document.getElementById('ov').classList.add('open');updCart()}
+function closeCart(){document.getElementById('cartSide').classList.remove('open');document.getElementById('ov').classList.remove('open')}
+function checkout(){
+  if(!cart.length){showToast('🛒 السلة فارغة!');return}
+  showToast('💜 تم تأكيد طلبك! سيتم التواصل معك على واتس آب');
+  cart=[];updCart();closeCart();
+}
+function togFav(e,id){
+  if(e)e.stopPropagation();
+  favs.has(id)?(favs.delete(id),showToast('💔 تم الحذف من المفضلة')):(favs.add(id),showToast('❤️ تمت الإضافة للمفضلة'));
+  renderBooks();renderFree();
+}
+function initChips(){
+  document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active');flt=c.dataset.f;vis=8;renderBooks();
+  }));
+}
+function filterBooks(tp){
+  flt=tp;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active',c.dataset.f===tp));
+  vis=8;renderBooks();
+  document.getElementById('books').scrollIntoView({behavior:'smooth'});
+}
+function filterCat(cat){
+  document.getElementById('bksGrid').innerHTML=BOOKS.filter(b=>b.cat===cat).map(bkCard).join('');
+  document.getElementById('books').scrollIntoView({behavior:'smooth'});
+}
+function initSearch(){
+  document.getElementById('searchInp').addEventListener('input',e=>{srch=e.target.value.trim();vis=8;renderBooks()});
+}
+function initTheme(){
+  const btn=document.getElementById('themeBtn');
+  const s=localStorage.getItem('theme')||'light';
+  if(s==='dark'){document.documentElement.setAttribute('data-theme','dark');btn.textContent='☀️'}
+  btn.addEventListener('click',()=>{
+    const dark=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+    btn.textContent=dark?'🌙':'☀️';
+    localStorage.setItem('theme',dark?'light':'dark');
+  });
+}
+function initScroll(){
+  window.addEventListener('scroll',()=>document.getElementById('stBtn').classList.toggle('show',scrollY>400));
+}
+function switchTab(t){
+  document.getElementById('loginForm').style.display=t==='login'?'block':'none';
+  document.getElementById('regForm').style.display=t==='reg'?'block':'none';
+  document.getElementById('tab-login').classList.toggle('active',t==='login');
+  document.getElementById('tab-reg').classList.toggle('active',t==='reg');
+}
+function showToast(msg){
+  const c=document.getElementById('toastCont');
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  c.appendChild(t);setTimeout(()=>t.remove(),3000);
+}
+</script>
+</body>
+</html>
