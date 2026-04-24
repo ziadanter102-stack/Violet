@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -6,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>مكتبة البنفسج – رفيدة رمضان</title>
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE"></script>
 <style>
 :root{
   --v950:#1e0a2e;--v900:#2d1147;--v800:#4a1d6b;--v700:#6b2d9a;
@@ -239,6 +239,22 @@ footer{background:var(--v950);color:rgba(255,255,255,.65);padding:4rem 2rem 1.5r
 .socials{display:flex;gap:.6rem}
 .soc-btn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.85rem;color:#fff;text-decoration:none;transition:background .2s}
 .soc-btn:hover{background:var(--v600)}
+
+/* WELCOME OVERLAY */
+.welcome-ov{position:fixed;inset:0;background:rgba(10,0,20,.82);z-index:1000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);animation:fadeIn .5s ease both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.welcome-ov.hide{animation:fadeOut .5s ease both;pointer-events:none}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
+.welcome-box{display:flex;flex-direction:column;align-items:center;gap:0;position:relative;max-width:420px;width:90%}
+.bubble{background:#fff;border-radius:22px 22px 22px 6px;padding:1.2rem 1.8rem;text-align:center;position:relative;box-shadow:0 8px 32px rgba(107,45,154,.35);animation:popIn .6s .4s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes popIn{from{opacity:0;transform:scale(.7) translateY(20px)}to{opacity:1;transform:none}}
+.bubble-title{font-family:'Amiri',serif;font-size:1.6rem;color:var(--v800);font-weight:700;margin-bottom:.4rem}
+.bubble-sub{font-size:.9rem;color:#555;line-height:1.7}
+.bubble::after{content:'';position:absolute;bottom:-18px;right:38px;border:10px solid transparent;border-top-color:#fff;border-right-color:#fff}
+.tree-char{width:260px;height:280px;animation:charIn .7s .2s ease both;filter:drop-shadow(0 12px 28px rgba(107,45,154,.3))}
+@keyframes charIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+.btn-enter{margin-top:1.8rem;padding:.85rem 2.8rem;background:linear-gradient(135deg,var(--v700),var(--v500));color:#fff;border:none;border-radius:16px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(107,45,154,.4);transition:.25s;animation:popIn .6s .8s cubic-bezier(.34,1.56,.64,1) both}
+.btn-enter:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(107,45,154,.5)}
 
 /* TOAST */
 .toast-cont{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;gap:.5rem;align-items:center;pointer-events:none}
@@ -755,6 +771,137 @@ function showToast(msg){
   const t=document.createElement('div');t.className='toast';t.textContent=msg;
   c.appendChild(t);setTimeout(()=>t.remove(),3000);
 }
+function closeWelcome(){
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  const ov=document.getElementById('welcomeOv');
+  ov.classList.add('hide');
+  setTimeout(()=>ov.style.display='none',500);
+}
+
+function speakWelcome(){
+  const btn = document.getElementById('speakBtn');
+  const text = 'مرحباً بك في مكتبة البنفسج! أنا شجرة المعرفة. هنا تجد كل ما يغذّي عقلك وروحك من كتب رائعة. تفضّل واستكشف معي!';
+
+  if(btn){ btn.textContent='🔊 يتكلم...'; btn.disabled=true; }
+
+  if(typeof responsiveVoice !== 'undefined'){
+    responsiveVoice.speak(text, 'Arabic Male', {
+      rate: 0.9, pitch: 1, volume: 1,
+      onend:  ()=>{ if(btn){ btn.textContent='🔊 اسمع الترحيب'; btn.disabled=false; } },
+      onerror:()=>{ fallbackSpeak(text, btn); }
+    });
+    return;
+  }
+  fallbackSpeak(text, btn);
+}
+
+function fallbackSpeak(text, btn){
+  if(!window.speechSynthesis){ if(btn){ btn.textContent='🔊 اسمع الترحيب'; btn.disabled=false; } return; }
+  const msg = new SpeechSynthesisUtterance(text);
+  msg.lang='ar-SA'; msg.rate=0.88; msg.pitch=1.1; msg.volume=1;
+  msg.onend=msg.onerror=()=>{ if(btn){ btn.textContent='🔊 اسمع الترحيب'; btn.disabled=false; } };
+  const arVoice = window.speechSynthesis.getVoices().find(v=>v.lang.startsWith('ar'));
+  if(arVoice) msg.voice=arVoice;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(msg);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const enterBtn=document.getElementById('enterBtn');
+  if(enterBtn) enterBtn.addEventListener('click',closeWelcome);
+  // Small delay so page renders first
+  setTimeout(speakWelcome, 800);
+});
 </script>
+
+<!-- WELCOME CHARACTER -->
+<div class="welcome-ov" id="welcomeOv">
+  <div class="welcome-box">
+    <div class="bubble">
+      <div class="bubble-title">🌸 مرحباً بك في مكتبة البنفسج!</div>
+      <div class="bubble-sub">أنا شجرة المعرفة 🌳<br>هنا تجد كل ما يغذّي عقلك وروحك من كتب رائعة 💜<br>تفضّل واستكشف معي!</div>
+      <button id="speakBtn" onclick="speakWelcome()" style="margin-top:.8rem;background:linear-gradient(135deg,#6b2d9a,#a855f7);color:#fff;border:none;border-radius:30px;padding:.5rem 1.4rem;font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:.5rem;margin-left:auto;margin-right:auto;box-shadow:0 4px 14px rgba(107,45,154,.35);transition:.2s;">🔊 اسمع الترحيب</button>
+    </div>
+    <svg class="tree-char" viewBox="0 0 260 280" xmlns="http://www.w3.org/2000/svg">
+      <!-- Book base -->
+      <rect x="18" y="245" width="224" height="22" rx="4" fill="#c4a020"/>
+      <rect x="22" y="245" width="216" height="18" rx="3" fill="#d4b535"/>
+      <rect x="125" y="243" width="4" height="22" fill="#b8901a"/>
+      <rect x="22" y="245" width="103" height="18" rx="3" fill="#a855f7" opacity=".3"/>
+      <!-- Trunk -->
+      <path d="M108 245 Q98 200 90 175 Q80 145 85 120 Q90 100 130 95 Q170 100 175 120 Q180 145 170 175 Q162 200 152 245Z" fill="#7B4F2E"/>
+      <path d="M120 245 Q112 195 108 170 Q102 145 110 120 Q118 105 130 100" fill="#6B3F22" opacity=".4"/>
+      <!-- Eyes -->
+      <ellipse cx="118" cy="168" rx="6" ry="7" fill="#fff"/>
+      <ellipse cx="142" cy="168" rx="6" ry="7" fill="#fff"/>
+      <circle cx="120" cy="169" r="4" fill="#3B1F0A"/>
+      <circle cx="144" cy="169" r="4" fill="#3B1F0A"/>
+      <circle cx="121" cy="167" r="1.5" fill="#fff"/>
+      <circle cx="145" cy="167" r="1.5" fill="#fff"/>
+      <!-- Eyebrows -->
+      <path d="M112 160 Q118 157 124 160" stroke="#5C3A1A" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M136 160 Q142 157 148 160" stroke="#5C3A1A" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- Smile -->
+      <path d="M116 182 Q130 192 144 182" stroke="#5C3A1A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- Cheeks -->
+      <ellipse cx="110" cy="180" rx="7" ry="5" fill="#e07070" opacity=".5"/>
+      <ellipse cx="150" cy="180" rx="7" ry="5" fill="#e07070" opacity=".5"/>
+      <!-- Waving arm -->
+      <path d="M88 155 Q65 140 50 125 Q42 118 48 110 Q54 103 62 110 Q72 120 88 135" fill="#7B4F2E"/>
+      <path d="M48 110 Q40 100 50 94 Q58 90 62 98" fill="#7B4F2E"/>
+      <path d="M50 94 Q48 82 58 82 Q65 82 64 91" fill="#7B4F2E"/>
+      <path d="M58 82 Q62 70 70 72 Q76 75 72 84" fill="#7B4F2E"/>
+      <path d="M70 72 Q78 64 84 70 Q88 76 80 82" fill="#7B4F2E"/>
+      <!-- Branches -->
+      <path d="M130 95 Q120 70 100 55 Q85 42 75 30" stroke="#7B4F2E" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <path d="M130 95 Q145 68 160 52 Q172 38 182 24" stroke="#7B4F2E" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <path d="M130 95 Q128 72 128 55 Q128 40 125 25" stroke="#7B4F2E" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <path d="M100 55 Q88 48 78 38 Q70 30 65 18" stroke="#7B4F2E" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M160 52 Q170 44 178 32 Q184 22 188 12" stroke="#7B4F2E" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M75 30 Q65 22 58 14 Q54 8 50 3" stroke="#7B4F2E" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M182 24 Q190 16 196 8 Q200 3 204 0" stroke="#7B4F2E" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <!-- Purple leaves -->
+      <g fill="#6b2d9a">
+        <ellipse cx="72" cy="26" rx="12" ry="8" transform="rotate(-30 72 26)"/>
+        <ellipse cx="55" cy="16" rx="10" ry="7" transform="rotate(-50 55 16)"/>
+        <ellipse cx="87" cy="18" rx="11" ry="7" transform="rotate(-10 87 18)"/>
+        <ellipse cx="48" cy="5" rx="9" ry="6" transform="rotate(-60 48 5)"/>
+        <ellipse cx="68" cy="8" rx="10" ry="6" transform="rotate(-40 68 8)"/>
+        <ellipse cx="128" cy="22" rx="12" ry="7" transform="rotate(-5 128 22)"/>
+        <ellipse cx="118" cy="10" rx="10" ry="6" transform="rotate(-20 118 10)"/>
+        <ellipse cx="138" cy="10" rx="10" ry="6" transform="rotate(15 138 10)"/>
+        <ellipse cx="185" cy="20" rx="12" ry="8" transform="rotate(20 185 20)"/>
+        <ellipse cx="198" cy="8" rx="10" ry="7" transform="rotate(40 198 8)"/>
+        <ellipse cx="174" cy="10" rx="11" ry="7" transform="rotate(10 174 10)"/>
+        <ellipse cx="205" cy="0" rx="9" ry="6" transform="rotate(55 205 0)"/>
+        <ellipse cx="98" cy="40" rx="11" ry="7" transform="rotate(-25 98 40)"/>
+        <ellipse cx="82" cy="50" rx="10" ry="6" transform="rotate(-40 82 50)"/>
+        <ellipse cx="165" cy="38" rx="11" ry="7" transform="rotate(20 165 38)"/>
+        <ellipse cx="178" cy="50" rx="10" ry="6" transform="rotate(35 178 50)"/>
+      </g>
+      <!-- Grass -->
+      <path d="M105 243 Q108 232 111 243" stroke="#22c55e" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M118 243 Q120 230 122 243" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M136 243 Q138 231 140 243" stroke="#22c55e" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M148 243 Q151 233 153 243" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- Boy sitting -->
+      <circle cx="82" cy="228" r="10" fill="#FBBF7C"/>
+      <rect x="72" y="237" width="20" height="14" rx="5" fill="#3B82F6"/>
+      <path d="M72 248 Q68 258 65 265" stroke="#FBBF7C" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M92 248 Q96 258 99 265" stroke="#FBBF7C" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M74 222 Q78 215 82 216 Q88 215 90 222" fill="#5C3A1A"/>
+      <rect x="65" y="258" width="22" height="8" rx="4" fill="#a855f7" opacity=".9"/>
+      <!-- Girl sitting -->
+      <circle cx="178" cy="228" r="10" fill="#FBBF7C"/>
+      <rect x="168" y="237" width="20" height="14" rx="5" fill="#EF4444"/>
+      <path d="M168 248 Q164 258 161 265" stroke="#FBBF7C" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M188 248 Q192 258 195 265" stroke="#FBBF7C" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M170 222 Q174 213 178 214 Q184 213 186 222" fill="#5C3A1A"/>
+      <rect x="165" y="258" width="22" height="8" rx="4" fill="#06B6D4" opacity=".9"/>
+      <path d="M170 222 Q178 218 186 222" stroke="#EF4444" stroke-width="3" fill="none"/>
+    </svg>
+    <button class="btn-enter" id="enterBtn">✨ ادخل المكتبة</button>
+  </div>
+</div>
 </body>
 </html>
