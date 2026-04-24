@@ -779,31 +779,27 @@ function closeWelcome(){
 }
 
 function speakWelcome(){
-  const btn = document.getElementById('speakBtn');
-  const text = 'مرحباً بك في مكتبة البنفسج! أنا شجرة المعرفة. هنا تجد كل ما يغذّي عقلك وروحك من كتب رائعة. تفضّل واستكشف معي!';
-
-  if(btn){ btn.textContent='🔊 يتكلم...'; btn.disabled=true; }
-
-  if(typeof responsiveVoice !== 'undefined'){
-    responsiveVoice.speak(text, 'Arabic Male', {
-      rate: 0.9, pitch: 1, volume: 1,
-      onend:  ()=>{ if(btn){ btn.textContent='🔊 اسمع الترحيب'; btn.disabled=false; } },
-      onerror:()=>{ fallbackSpeak(text, btn); }
-    });
-    return;
+  var btn = document.getElementById('speakBtn');
+  if(!window.speechSynthesis){
+    if(btn){btn.textContent='لا يدعم متصفحك الصوت';} return;
   }
-  fallbackSpeak(text, btn);
-}
-
-function fallbackSpeak(text, btn){
-  if(!window.speechSynthesis){ if(btn){ btn.textContent='🔊 اسمع الترحيب'; btn.disabled=false; } return; }
-  const msg = new SpeechSynthesisUtterance(text);
-  msg.lang='ar-SA'; msg.rate=0.88; msg.pitch=1.1; msg.volume=1;
-  msg.onend=msg.onerror=()=>{ if(btn){ btn.textContent='🔊 اسمع الترحيب'; btn.disabled=false; } };
-  const arVoice = window.speechSynthesis.getVoices().find(v=>v.lang.startsWith('ar'));
-  if(arVoice) msg.voice=arVoice;
   window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(msg);
+  if(btn){btn.textContent='🔊 يتكلم...'; btn.disabled=true;}
+  function reset(){if(btn){btn.textContent='🔊 اسمع الترحيب';btn.disabled=false;}}
+  function doSpeak(){
+    var voices=window.speechSynthesis.getVoices();
+    var u=new SpeechSynthesisUtterance();
+    u.text='مرحباً بك في مكتبة البنفسج. أنا شجرة المعرفة. هنا تجد كل ما يغذي عقلك وروحك من كتب رائعة. تفضل واستكشف معي!';
+    u.lang='ar-SA'; u.rate=0.82; u.pitch=1.0; u.volume=1.0;
+    var ar=null;
+    for(var i=0;i<voices.length;i++){if(voices[i].lang.indexOf('ar')===0){ar=voices[i];break;}}
+    if(ar) u.voice=ar;
+    u.onend=reset; u.onerror=reset;
+    window.speechSynthesis.speak(u);
+  }
+  var v=window.speechSynthesis.getVoices();
+  if(v.length>0){setTimeout(doSpeak,100);}
+  else{window.speechSynthesis.onvoiceschanged=function(){setTimeout(doSpeak,100);};}
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
@@ -823,36 +819,28 @@ document.addEventListener('DOMContentLoaded',()=>{
       <button id="speakBtn" onclick="speakWelcome()" style="margin-top:.8rem;background:linear-gradient(135deg,#6b2d9a,#a855f7);color:#fff;border:none;border-radius:30px;padding:.5rem 1.4rem;font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:.5rem;margin-left:auto;margin-right:auto;box-shadow:0 4px 14px rgba(107,45,154,.35);transition:.2s;">🔊 اسمع الترحيب</button>
     </div>
     <svg class="tree-char" viewBox="0 0 260 280" xmlns="http://www.w3.org/2000/svg">
-      <!-- Book base -->
       <rect x="18" y="245" width="224" height="22" rx="4" fill="#c4a020"/>
       <rect x="22" y="245" width="216" height="18" rx="3" fill="#d4b535"/>
       <rect x="125" y="243" width="4" height="22" fill="#b8901a"/>
       <rect x="22" y="245" width="103" height="18" rx="3" fill="#a855f7" opacity=".3"/>
-      <!-- Trunk -->
       <path d="M108 245 Q98 200 90 175 Q80 145 85 120 Q90 100 130 95 Q170 100 175 120 Q180 145 170 175 Q162 200 152 245Z" fill="#7B4F2E"/>
       <path d="M120 245 Q112 195 108 170 Q102 145 110 120 Q118 105 130 100" fill="#6B3F22" opacity=".4"/>
-      <!-- Eyes -->
       <ellipse cx="118" cy="168" rx="6" ry="7" fill="#fff"/>
       <ellipse cx="142" cy="168" rx="6" ry="7" fill="#fff"/>
       <circle cx="120" cy="169" r="4" fill="#3B1F0A"/>
       <circle cx="144" cy="169" r="4" fill="#3B1F0A"/>
       <circle cx="121" cy="167" r="1.5" fill="#fff"/>
       <circle cx="145" cy="167" r="1.5" fill="#fff"/>
-      <!-- Eyebrows -->
       <path d="M112 160 Q118 157 124 160" stroke="#5C3A1A" stroke-width="2" fill="none" stroke-linecap="round"/>
       <path d="M136 160 Q142 157 148 160" stroke="#5C3A1A" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <!-- Smile -->
       <path d="M116 182 Q130 192 144 182" stroke="#5C3A1A" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <!-- Cheeks -->
       <ellipse cx="110" cy="180" rx="7" ry="5" fill="#e07070" opacity=".5"/>
       <ellipse cx="150" cy="180" rx="7" ry="5" fill="#e07070" opacity=".5"/>
-      <!-- Waving arm -->
       <path d="M88 155 Q65 140 50 125 Q42 118 48 110 Q54 103 62 110 Q72 120 88 135" fill="#7B4F2E"/>
       <path d="M48 110 Q40 100 50 94 Q58 90 62 98" fill="#7B4F2E"/>
       <path d="M50 94 Q48 82 58 82 Q65 82 64 91" fill="#7B4F2E"/>
       <path d="M58 82 Q62 70 70 72 Q76 75 72 84" fill="#7B4F2E"/>
       <path d="M70 72 Q78 64 84 70 Q88 76 80 82" fill="#7B4F2E"/>
-      <!-- Branches -->
       <path d="M130 95 Q120 70 100 55 Q85 42 75 30" stroke="#7B4F2E" stroke-width="10" fill="none" stroke-linecap="round"/>
       <path d="M130 95 Q145 68 160 52 Q172 38 182 24" stroke="#7B4F2E" stroke-width="10" fill="none" stroke-linecap="round"/>
       <path d="M130 95 Q128 72 128 55 Q128 40 125 25" stroke="#7B4F2E" stroke-width="8" fill="none" stroke-linecap="round"/>
@@ -860,7 +848,6 @@ document.addEventListener('DOMContentLoaded',()=>{
       <path d="M160 52 Q170 44 178 32 Q184 22 188 12" stroke="#7B4F2E" stroke-width="7" fill="none" stroke-linecap="round"/>
       <path d="M75 30 Q65 22 58 14 Q54 8 50 3" stroke="#7B4F2E" stroke-width="5" fill="none" stroke-linecap="round"/>
       <path d="M182 24 Q190 16 196 8 Q200 3 204 0" stroke="#7B4F2E" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <!-- Purple leaves -->
       <g fill="#6b2d9a">
         <ellipse cx="72" cy="26" rx="12" ry="8" transform="rotate(-30 72 26)"/>
         <ellipse cx="55" cy="16" rx="10" ry="7" transform="rotate(-50 55 16)"/>
@@ -879,19 +866,16 @@ document.addEventListener('DOMContentLoaded',()=>{
         <ellipse cx="165" cy="38" rx="11" ry="7" transform="rotate(20 165 38)"/>
         <ellipse cx="178" cy="50" rx="10" ry="6" transform="rotate(35 178 50)"/>
       </g>
-      <!-- Grass -->
       <path d="M105 243 Q108 232 111 243" stroke="#22c55e" stroke-width="3" fill="none" stroke-linecap="round"/>
       <path d="M118 243 Q120 230 122 243" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round"/>
       <path d="M136 243 Q138 231 140 243" stroke="#22c55e" stroke-width="3" fill="none" stroke-linecap="round"/>
       <path d="M148 243 Q151 233 153 243" stroke="#16a34a" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <!-- Boy sitting -->
       <circle cx="82" cy="228" r="10" fill="#FBBF7C"/>
       <rect x="72" y="237" width="20" height="14" rx="5" fill="#3B82F6"/>
       <path d="M72 248 Q68 258 65 265" stroke="#FBBF7C" stroke-width="5" fill="none" stroke-linecap="round"/>
       <path d="M92 248 Q96 258 99 265" stroke="#FBBF7C" stroke-width="5" fill="none" stroke-linecap="round"/>
       <path d="M74 222 Q78 215 82 216 Q88 215 90 222" fill="#5C3A1A"/>
       <rect x="65" y="258" width="22" height="8" rx="4" fill="#a855f7" opacity=".9"/>
-      <!-- Girl sitting -->
       <circle cx="178" cy="228" r="10" fill="#FBBF7C"/>
       <rect x="168" y="237" width="20" height="14" rx="5" fill="#EF4444"/>
       <path d="M168 248 Q164 258 161 265" stroke="#FBBF7C" stroke-width="5" fill="none" stroke-linecap="round"/>
